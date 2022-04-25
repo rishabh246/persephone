@@ -26,28 +26,28 @@ Building the systems
 ---------------------------------
 On the server machine:
 ```bash
-export AE_DIR=/usr/local/sosp
-git clone --recurse-submodules https://github.com/maxdml/psp.git ${AE_DIR}/Persephone
-${AE_DIR}/Persephone/sosp_aec/base_setup.sh
+export PSP_DIR=/usr/local/sosp
+git clone --recurse-submodules https://github.com/maxdml/psp.git ${PSP_DIR}/Persephone
+${PSP_DIR}/Persephone/sosp_aec/base_setup.sh
 ```
 This script will setup Perséphone, Shinjuku, and other dependent systems.
 
 Shenango builds and runs on a different kernel, so we need to configure and restart the machine:
 ```bash
-sudo ${AE_DIR}/Persephone/scripts/setup/pick_kernel.sh 4.15.0-142-generic
+sudo ${PSP_DIR}/Persephone/scripts/setup/pick_kernel.sh 4.15.0-142-generic
 sudo reboot
 ```
 Then:
 ```bash
-export AE_DIR=/usr/local/sosp
-${AE_DIR}/Persephone/sosp_aec/build_shenango.sh
+export PSP_DIR=/usr/local/sosp
+${PSP_DIR}/Persephone/sosp_aec/build_shenango.sh
 ```
 
 On the client machines:
 ```bash
-export AE_DIR=/usr/local/sosp
-git clone --recurse-submodules https://github.com/maxdml/psp.git ${AE_DIR}/client; cd ${AE_DIR}/client; git checkout client; mkdir ${AE_DIR}/client/build; cd ${AE_DIR}/client/build; cmake -DCMAKE_BUILD_TYPE=Release -DDPDK_MELLANOX_SUPPORT=OFF ${AE_DIR}/client; make -j -C ${AE_DIR}/client/build
-${AE_DIR}/client/sosp_aec/base_start.sh client
+export PSP_DIR=/usr/local/sosp
+git clone --recurse-submodules https://github.com/maxdml/psp.git ${PSP_DIR}/client; cd ${PSP_DIR}/client; git checkout client; mkdir ${PSP_DIR}/client/build; cd ${PSP_DIR}/client/build; cmake -DCMAKE_BUILD_TYPE=Release -DDPDK_MELLANOX_SUPPORT=OFF ${PSP_DIR}/client; make -j -C ${PSP_DIR}/client/build
+${PSP_DIR}/client/sosp_aec/base_start.sh client
 ```
 
 Simple client-server tests
@@ -57,14 +57,14 @@ We will now make sure that all three systems work (Perséphone, Shinjuku, Shenan
 ### Perséphone
 On the server On the server (reboot on 4.4.0-187-generic if needed):
 ```bash
-${AE_DIR}/Persephone/sosp_aec/base_start.sh Persephone
-cd ${AE_DIR}/Persephone/build/src/c++/apps/app/
-sudo numactl -N0 -m0 ./psp-app --cfg ${AE_DIR}/Persephone/sosp_aec/configs/base_psp_cfg.yml --label test
+${PSP_DIR}/Persephone/sosp_aec/base_start.sh Persephone
+cd ${PSP_DIR}/Persephone/build/src/c++/apps/app/
+sudo numactl -N0 -m0 ./psp-app --cfg ${PSP_DIR}/Persephone/sosp_aec/configs/base_psp_cfg.yml --label test
 ```
 
 On one client:
 ```bash
-sudo numactl -N0 -m0 ${AE_DIR}/client/build/src/c++/apps//client/client --config-path ${AE_DIR}/client/sosp_aec/configs/base_client_psp_cfg.yml --label test --ip 192.168.10.10 --port 6789 --max-concurrency -1 --sample -1 --collect-logs 1 --outdir client0
+sudo numactl -N0 -m0 ${PSP_DIR}/client/build/src/c++/apps//client/client --config-path ${PSP_DIR}/client/sosp_aec/configs/base_client_psp_cfg.yml --label test --ip 192.168.10.10 --port 6789 --max-concurrency -1 --sample -1 --collect-logs 1 --outdir client0
 ```
 
 If you see an output similar to the one below, the system works as expected. You can ignore the Fdir error.
@@ -89,15 +89,15 @@ If you see an output similar to the one below, the system works as expected. You
 On the server (reboot on 4.4.0-187-generic if needed)
 ```bash
 # We use base_start.sh to unbind the NIC from igb_uio
-${AE_DIR}/Persephone/sosp_aec/base_start.sh shinjuku
-sudo numactl -N0 -m0 ${AE_DIR}/Persephone/submodules/shinjuku/dp/shinjuku -c ${AE_DIR}/Persephone/sosp_aec/configs/base_shinjuku_conf
+${PSP_DIR}/Persephone/sosp_aec/base_start.sh shinjuku
+sudo numactl -N0 -m0 ${PSP_DIR}/Persephone/submodules/shinjuku/dp/shinjuku -c ${PSP_DIR}/Persephone/sosp_aec/configs/base_shinjuku_conf
 ```
 
 On the client update the server's NIC MAC address in the config file.
 One way to find the NIC MAC ID is through the Cloudlab portal, by clicking on the node. It should be the only 10Gbps NIC, eth1.
-In ${AE_DIR}/client/sosp_aec/configs/base_client_sjk_cfg.yml, put that value in the field "remote_mac".
+In ${PSP_DIR}/client/sosp_aec/configs/base_client_sjk_cfg.yml, put that value in the field "remote_mac".
 ```bash
-sudo numactl -N0 -m0 ${AE_DIR}/client/build/src/c++/apps//client/client --config-path ${AE_DIR}/client/sosp_aec/configs/base_client_sjk_cfg.yml --label test --ip 192.168.10.10 --port 6789 --max-concurrency -1 --sample -1 --collect-logs 1 --outdir client0
+sudo numactl -N0 -m0 ${PSP_DIR}/client/build/src/c++/apps//client/client --config-path ${PSP_DIR}/client/sosp_aec/configs/base_client_sjk_cfg.yml --label test --ip 192.168.10.10 --port 6789 --max-concurrency -1 --sample -1 --collect-logs 1 --outdir client0
 ```
 
 You should have a similar ouput than for Perséphone if this test worked correctly.
@@ -105,17 +105,17 @@ You should have a similar ouput than for Perséphone if this test worked correct
 ### Shenango
 On one server terminal (reboot on 4.15.0-142-generic if needed)
 ```bash
-${AE_DIR}/Persephone/sosp_aec/base_start.sh Shenango
-sudo ${AE_DIR}/Persephone/submodules/shenango/iokerneld ias 0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62 noht
+${PSP_DIR}/Persephone/sosp_aec/base_start.sh Shenango
+sudo ${PSP_DIR}/Persephone/submodules/shenango/iokerneld ias 0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62 noht
 ```
 On a second server terminal
 ```bash
-numactl -N0 -m0 ${AE_DIR}/Persephone/submodules/shenango/apps/psp_fakework/psp_fakework ${AE_DIR}/Persephone/sosp_aec/configs/base_shenango_conf 6789
+numactl -N0 -m0 ${PSP_DIR}/Persephone/submodules/shenango/apps/psp_fakework/psp_fakework ${PSP_DIR}/Persephone/sosp_aec/configs/base_shenango_conf 6789
 ```
 
 On a client machine
 ```bash
-sudo numactl -N0 -m0 ${AE_DIR}/client/build/src/c++/apps//client/client --config-path ${AE_DIR}/client/sosp_aec/configs/base_client_psp_cfg.yml --label test --ip 192.168.10.10 --port 6789 --max-concurrency -1 --sample -1 --collect-logs 1 --outdir client0
+sudo numactl -N0 -m0 ${PSP_DIR}/client/build/src/c++/apps//client/client --config-path ${PSP_DIR}/client/sosp_aec/configs/base_client_psp_cfg.yml --label test --ip 192.168.10.10 --port 6789 --max-concurrency -1 --sample -1 --collect-logs 1 --outdir client0
 ```
 
 You should have a similar ouput than for Perséphone if this test worked correctly.

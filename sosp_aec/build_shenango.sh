@@ -18,7 +18,7 @@ kernver() {
 kernver
 
 
-pushd ${AE_DIR}/Persephone/submodules/shenango
+pushd ${PSP_DIR}/Persephone/submodules/shenango
 make submodules
 make -j
 

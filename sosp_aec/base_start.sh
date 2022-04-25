@@ -23,13 +23,13 @@ kernver() {
 # Have the NIC use IGB_UIO for Perséphone and the client. Shinjuku has its own i40e driver.
 if [[ "$SYS_NAME" == "Persephone" || "$SYS_NAME" == "client" ]]; then
     # Disable turbo
-    sudo ${AE_DIR}/${SYS_NAME}/scripts/setup/turbo.sh disable
+    sudo ${PSP_DIR}/${SYS_NAME}/scripts/setup/turbo.sh disable
     # Unbind the NIC from the kernel driver
-    sudo ${AE_DIR}/${SYS_NAME}/submodules/dpdk/usertools/dpdk-devbind.py --force -u 18:00.1
+    sudo ${PSP_DIR}/${SYS_NAME}/submodules/dpdk/usertools/dpdk-devbind.py --force -u 18:00.1
     # Load uio to bypass the kernel and use the NIC. Need the module built for the kernel in use
     sudo modprobe uio
-    sudo insmod ${AE_DIR}/${SYS_NAME}/submodules/dpdk/x86_64-native-linuxapp-gcc/build/kernel/linux/igb_uio/igb_uio.ko
-    sudo ${AE_DIR}/${SYS_NAME}/submodules/dpdk/usertools/dpdk-devbind.py -b igb_uio 18:00.1
+    sudo insmod ${PSP_DIR}/${SYS_NAME}/submodules/dpdk/x86_64-native-linuxapp-gcc/build/kernel/linux/igb_uio/igb_uio.ko
+    sudo ${PSP_DIR}/${SYS_NAME}/submodules/dpdk/usertools/dpdk-devbind.py -b igb_uio 18:00.1
 fi
 
 if [[ "$SYS_NAME" == "Shenango" ]]; then
@@ -37,15 +37,15 @@ if [[ "$SYS_NAME" == "Shenango" ]]; then
     kernver 4 15
 
     # Disable turbo
-    sudo ${AE_DIR}/Persephone/scripts/setup/turbo.sh disable
+    sudo ${PSP_DIR}/Persephone/scripts/setup/turbo.sh disable
     # Unbind the NIC from the kernel driver
 
     # Unbind the NIC from the kernel driver
-    sudo ${AE_DIR}/Persephone/submodules/shenango/dpdk/usertools/dpdk-devbind.py -u --force 18:00.1
+    sudo ${PSP_DIR}/Persephone/submodules/shenango/dpdk/usertools/dpdk-devbind.py -u --force 18:00.1
     # Load uio to bypass the kernel and use the NIC. Need the module built for the kernel in use
     sudo modprobe uio
-    sudo insmod ${AE_DIR}/Persephone/submodules/shenango/dpdk/build/kmod/igb_uio.ko
-    sudo ${AE_DIR}/Persephone/submodules/shenango/dpdk/usertools/dpdk-devbind.py -b igb_uio 18:00.1
+    sudo insmod ${PSP_DIR}/Persephone/submodules/shenango/dpdk/build/kmod/igb_uio.ko
+    sudo ${PSP_DIR}/Persephone/submodules/shenango/dpdk/usertools/dpdk-devbind.py -b igb_uio 18:00.1
 
     # needed for the iokernel's shared memory
     sudo sysctl -w kernel.shm_rmid_forced=1
@@ -57,18 +57,18 @@ if [[ "$SYS_NAME" == "Shenango" ]]; then
     # set up the ksched module
     sudo rmmod ksched
     sudo rm /dev/ksched
-    sudo insmod ${AE_DIR}/Persephone/submodules/shenango/ksched/build/ksched.ko
+    sudo insmod ${PSP_DIR}/Persephone/submodules/shenango/ksched/build/ksched.ko
     sudo mknod /dev/ksched c 280 0
     sudo chmod uga+rwx /dev/ksched
 fi
 
 if [[ "$SYS_NAME" == "shinjuku" ]]; then
     # Disable turbo
-    sudo ${AE_DIR}/Persephone/scripts/setup/turbo.sh disable
+    sudo ${PSP_DIR}/Persephone/scripts/setup/turbo.sh disable
     # Unbind the NIC from the kernel driver
-    sudo ${AE_DIR}/Persephone/submodules/shinjuku/deps/dpdk/tools/dpdk_nic_bind.py --force -u 18:00.1
-    sudo insmod ${AE_DIR}/Persephone/submodules/shinjuku/deps/dune/kern/dune.ko
-    sudo insmod ${AE_DIR}/Persephone/submodules/shinjuku/deps/pcidma/pcidma.ko
+    sudo ${PSP_DIR}/Persephone/submodules/shinjuku/deps/dpdk/tools/dpdk_nic_bind.py --force -u 18:00.1
+    sudo insmod ${PSP_DIR}/Persephone/submodules/shinjuku/deps/dune/kern/dune.ko
+    sudo insmod ${PSP_DIR}/Persephone/submodules/shinjuku/deps/pcidma/pcidma.ko
 fi
 
 sudo mkdir -p /tmpfs
