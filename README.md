@@ -46,7 +46,7 @@ ${PSP_DIR}/Persephone/sosp_aec/build_shenango.sh
 On the client machines:
 ```bash
 export PSP_DIR=/usr/local/sosp
-git clone --recurse-submodules https://github.com/maxdml/psp.git ${PSP_DIR}/client; cd ${PSP_DIR}/client; git checkout client; mkdir ${PSP_DIR}/client/build; cd ${PSP_DIR}/client/build; cmake -DCMAKE_BUILD_TYPE=Release -DDPDK_MELLANOX_SUPPORT=OFF ${PSP_DIR}/client; make -j -C ${PSP_DIR}/client/build
+git clone --recurse-submodules https://github.com/rishabh246/persephone.git ${PSP_DIR}/client; cd ${PSP_DIR}/client; git checkout client; mkdir ${PSP_DIR}/client/build; cd ${PSP_DIR}/client/build; cmake -DCMAKE_BUILD_TYPE=Release -DDPDK_MELLANOX_SUPPORT=OFF ${PSP_DIR}/client; make -j -C ${PSP_DIR}/client/build
 ${PSP_DIR}/client/sosp_aec/base_start.sh client
 ```
 
