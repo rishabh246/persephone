@@ -27,7 +27,7 @@ Building the systems
 On the server machine:
 ```bash
 export PSP_DIR=/usr/local/sosp
-git clone --recurse-submodules https://github.com/maxdml/psp.git ${PSP_DIR}/Persephone
+git clone --recurse-submodules https://github.com/rishabh246/persephone.git ${PSP_DIR}/Persephone
 ${PSP_DIR}/Persephone/sosp_aec/base_setup.sh
 ```
 This script will setup Perséphone, Shinjuku, and other dependent systems.
